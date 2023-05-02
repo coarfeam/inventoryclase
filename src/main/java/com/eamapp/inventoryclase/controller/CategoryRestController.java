@@ -23,4 +23,9 @@ public class CategoryRestController {
     public ResponseEntity<List<Category>> saveCategorie(@RequestBody Category category){
         return categoryService.save(category);
     }
+
+    @GetMapping("categories/{id}")
+    public ResponseEntity<Category> searchCategoryById(@PathVariable Long id){
+        return categoryService.searchById(id);
+    }
 }

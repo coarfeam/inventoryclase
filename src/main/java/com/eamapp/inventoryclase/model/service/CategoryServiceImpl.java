@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -41,6 +42,19 @@ public class CategoryServiceImpl implements ICategoryService{
             categories.add(categorySaved);
             return new ResponseEntity<>(categories, HttpStatus.OK);
         }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<Category> searchById(Long id) {
+        try {
+            Optional<Category> category = categoryRepository.findById(id);
+            return category.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
+        catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
