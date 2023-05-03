@@ -60,5 +60,24 @@ public class CategoryServiceImpl implements ICategoryService{
         }
     }
 
+    @Override
+    public ResponseEntity<List<Category>> update(Category category, Long id) {
+        try{
+            Optional<Category> categorySearch = categoryRepository.findById(id);
+            if (categorySearch.isPresent()){
+                categorySearch.get().setName(category.getName());
+                categorySearch.get().setDescription(category.getDescription());
+                Category categoryToUpdate =categoryRepository.save(categorySearch.get());
+                categories.add(categoryToUpdate);
+                return new ResponseEntity<>(categories, HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
