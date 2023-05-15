@@ -52,7 +52,13 @@ public class CategoryServiceImpl implements ICategoryService{
     public ResponseEntity<Category> searchById(Long id) {
         try {
             Optional<Category> category = categoryRepository.findById(id);
-            return category.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//            return category.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            if(category.isPresent()){
+                return new ResponseEntity<>(category.get(), HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
         catch (Exception e){
             e.printStackTrace();
@@ -73,6 +79,17 @@ public class CategoryServiceImpl implements ICategoryService{
             }else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<Category>> delete(Long id) {
+        try {
+            categoryRepository.deleteById(id);
+            return new ResponseEntity<>(categories, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
