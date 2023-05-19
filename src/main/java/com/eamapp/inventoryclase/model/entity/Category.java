@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,5 +20,7 @@ public class Category implements Serializable {
     private Long id;
     private String name;
     private String description;
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }
