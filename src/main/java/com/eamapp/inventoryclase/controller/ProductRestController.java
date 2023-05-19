@@ -40,4 +40,21 @@ public class ProductRestController {
         product.setPicture(Util.compressZLib(picture.getBytes()));
         return productService.save(product, categoryId);
     }
+
+    @PutMapping("products/{id}")
+    public ResponseEntity<List<Product>> updateProduct(
+            @RequestParam("name") String name,
+            @RequestParam("price") Double price,
+            @RequestParam("quantity") int quantity,
+            @RequestParam("picture") MultipartFile picture,
+            @RequestParam("categoryId") Long categoryId,
+            @PathVariable Long id
+    ) throws IOException{
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(price);
+        product.setQuantity(quantity);
+        product.setPicture(Util.compressZLib(picture.getBytes()));
+        return productService.update(product, categoryId, id);
+    }
 }

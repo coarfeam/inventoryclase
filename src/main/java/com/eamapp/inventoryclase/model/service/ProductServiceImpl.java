@@ -72,4 +72,38 @@ public class ProductServiceImpl implements IProductService{
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<List<Product>> update(Product product, Long categoryId, Long productId) {
+        try{
+            Optional<Category> category = categoryRepository.findById(categoryId);
+            if (category.isPresent()){
+                product.setCategory(category.get());
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            Optional<Product> productSearch = productRepository.findById(productId);
+            if (productSearch.isPresent()){
+                productSearch.get().setName(product.getName());
+                productSearch.get().setPrice(product.getPrice());
+                productSearch.get().setQuantity(product.getQuantity());
+                productSearch.get().setPicture(product.getPicture());
+                productSearch.get().setCategory(product.getCategory());
+
+                Product productSaved = productRepository.save(productSearch.get());
+                if (productSaved != null){
+                    products.add(productSaved);
+                }
+                else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 }
